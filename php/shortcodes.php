@@ -25,7 +25,8 @@ function allContacts(){
 
 		if($_REQUEST['type'] == "web"){
 			$vcard = "";
-			$users = TSJIPPY\getUserAccounts(false, $excludeChildren, true, ['ID']);
+			
+			$users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID']);
 			foreach($users as $user){
 				$lastChanged	= get_user_meta($user->ID, 'phone-last-changed', true);
 				if(
@@ -54,7 +55,7 @@ function allContacts(){
 			
 			if ($zip->open('SIMContacts.zip', \ZipArchive::CREATE) === true){
 				//Get all user accounts
-				$users = TSJIPPY\getUserAccounts(false, $excludeChildren, true, ['ID','display_name']);
+				$users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID','display_name']);
 				
 				//Loop over the accounts and add their vcards
 				foreach($users as $user){
