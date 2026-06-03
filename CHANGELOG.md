@@ -2,14 +2,21 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- echo escaping
 
 ### Changed
-- use gmdate not date
 
 ### Fixed
 
 ### Updated
+
+## [10.1.3] - 2026-06-03
+
+
+### Added
+- echo escaping
+
+### Changed
+- use gmdate not date
 
 ## [10.1.2] - 2026-06-01
 
