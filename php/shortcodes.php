@@ -281,7 +281,7 @@ function createContactlistPdf($header, $data, $download=false) {
     // Closing line
     $pdf->Cell(array_sum($widths), 0, '', 'T');
 	
-	$contactList = "Contactlist - ".date('F').".pdf";
+	$contactList = "Contactlist - ".gmdate('F').".pdf";
 
 	$output		= 'F';
 	if($download === true){
