@@ -713,7 +713,7 @@ function showContent($userId){
 				?>
 				<article id="post-<?php echo $post->ID; ?>" class='author-content'>
 					<div class='picture'>
-						<a href='<?php echo $url;?>'>
+						<a href='<?php echo esc_url($url);?>'>
 							<?php
 							echo get_the_post_thumbnail( $post, [250,200] );
 							?>
@@ -721,7 +721,7 @@ function showContent($userId){
 					</div>
 
 					<div class='title'>
-						<a href='<?php echo $url;?>'>
+						<a href='<?php echo esc_url($url);?>'>
 							<h4><?php echo wp_kses( force_balance_tags($post->post_title), $allowedHtml );?></h4>
 						</a>
 					</div>
