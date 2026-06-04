@@ -1,5 +1,7 @@
 <?php
+
 namespace TSJIPPY\USERPAGES;
+
 use TSJIPPY;
 
 /**
@@ -20,7 +22,7 @@ use TSJIPPY;
  *
  * @author Ewald Harmsen
  */
-if ( ! defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
@@ -31,7 +33,7 @@ define(__NAMESPACE__ . '\PLUGIN', plugin_basename(__FILE__));
 define(__NAMESPACE__ . '\PLUGINPATH', __DIR__ . '/');
 define(__NAMESPACE__ . '\PLUGINVERSION', get_plugin_data(__FILE__, false, false)['Version']);
 define(__NAMESPACE__ . '\PLUGINSLUG', str_replace('tsjippy-', '', basename(__FILE__, ' .php')));
-define(__NAMESPACE__ . '\SETTINGS', get_option('tsjippy_' .PLUGINSLUG. '_settings', []));
+define(__NAMESPACE__ . '\SETTINGS', get_option('tsjippy_' . PLUGINSLUG . '_settings', []));
 
 // run right before activation
 register_activation_hook(__FILE__, function () {
@@ -40,7 +42,7 @@ register_activation_hook(__FILE__, function () {
 
     $settings['all-contacts-page']    = TSJIPPY\ADMIN\createDefaultPage('All Users', '[all_contacts]');
 
-    update_option('tsjippy_' .PLUGINSLUG. '_settings', $settings);
+    update_option('tsjippy_' . PLUGINSLUG . '_settings', $settings);
 });
 
 // run on deactivation
@@ -50,4 +52,3 @@ register_deactivation_hook(__FILE__, function () {
         wp_delete_post($page, true);
     }
 });
-

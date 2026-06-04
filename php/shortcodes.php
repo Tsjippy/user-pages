@@ -1,10 +1,13 @@
 <?php
+
 namespace TSJIPPY\USERPAGES;
+
 use TSJIPPY;
 
 //Shortcode to download all contact info
 add_shortcode("all_contacts", __NAMESPACE__ . '\allContacts');
-function allContacts() {
+function allContacts()
+{
     $shouldDie    = true;
 
     // get last download time
@@ -35,10 +38,10 @@ function allContacts() {
                         (
                             strtotime($user->data->user_registered) > $lastDownload    ||        // this user accont is created after our last download
                             !empty($lastChanged) && $lastChanged > $lastDownload            // phone number updated since last download
-                       )
-                   )    ||
+                        )
+                    )    ||
                     empty($_REQUEST['since'])                                                // we want all accounts
-               ) {
+                ) {
                     $vcard .= buildVcard($user->ID);
                 }
             }
@@ -47,15 +50,15 @@ function allContacts() {
                 header('Content-Type: text/x-vcard');
                 header('Content-Disposition: inline; filename= "SIMContacts.vcf"');
                 echo $vcard;
-            }else{
+            } else {
                 $shouldDie    = false;
             }
-        }elseif ($_REQUEST['type'] == "outlook") {
+        } elseif ($_REQUEST['type'] == "outlook") {
             $zip = new \ZipArchive;
 
             if ($zip->open('SIMContacts.zip', \ZipArchive::CREATE) === true) {
                 //Get all user accounts
-                $users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID','display_name']);
+                $users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID', 'display_name']);
 
                 //Loop over the accounts and add their vcards
                 foreach ($users as $user) {
@@ -63,10 +66,10 @@ function allContacts() {
                         (
                             !empty($_REQUEST['since'])                                    &&        // we only want new users since last download
                             strtotime($user->data->user_registered) > $lastDownload                // this user accont is created after our last download
-                       )    ||
+                        )    ||
                         empty($_REQUEST['since'])                                                // we want all accounts
-                   ) {
-                        $zip->addFromString($user->display_name. ' .vcf', buildVcard($user->ID));
+                    ) {
+                        $zip->addFromString($user->display_name . ' .vcf', buildVcard($user->ID));
                     }
                 }
 
@@ -82,7 +85,7 @@ function allContacts() {
 
             //remove the zip from the server
             unlink('SIMContacts.zip');
-        }elseif ($_REQUEST['type'] == "pdf") {
+        } elseif ($_REQUEST['type'] == "pdf") {
             //Create a pdf and add it to the mail
             buildUserDetailPdf();
         }
@@ -92,29 +95,28 @@ function allContacts() {
 
             return;
         }
-
     }
 
     //Return vcard hyperlink
     ob_start();
     if (!$shouldDie) {
-        ?>
+?>
         <div class='warning'>
             No new contact details to download since last time
         </div>
-        <?php
+    <?php
     }
     ?>
     <script>
-        document.addEventListener('click', ev=>{
-            let target    = ev.target;
+        document.addEventListener('click', ev => {
+            let target = ev.target;
             if (target.matches(' .type-selector')) {
                 ev.stopImmediatePropagation();
 
                 if (target.value == 'pdf') {
-                    document.querySelectorAll(' .since-wrapper').foreach (el=>el.classList.add('hidden'));
-                }else{
-                    document.querySelectorAll(' .since-wrapper').foreach (el=>el.classList.remove('hidden'));
+                    document.querySelectorAll(' .since-wrapper').foreach(el => el.classList.add('hidden'));
+                } else {
+                    document.querySelectorAll(' .since-wrapper').foreach(el => el.classList.remove('hidden'));
                 }
             }
         })
@@ -155,7 +157,7 @@ function allContacts() {
             <div class='since-wrapper hidden'>
                 <label>
                     <input type='checkbox' name='since' value='last' checked>
-                    Download new user details since last download (<?php echo gmdate(DATEFORMAT, $lastDownload);?>)
+                    Download new user details since last download (<?php echo gmdate(DATEFORMAT, $lastDownload); ?>)
                 </label>
                 <br>
             </div>
@@ -170,7 +172,7 @@ function allContacts() {
         ?>
     </div>
 
-    <?php
+<?php
     return ob_get_clean();
 }
 
@@ -183,7 +185,8 @@ add_shortcode('user_link', __NAMESPACE__ . '\linkedUserDescription');
  * @param array $atts The shortcode attributes.
  * @return string The HTML for the user link.
  */
-function linkedUserDescription($atts) {
+function linkedUserDescription($atts)
+{
     $html     = "";
     $a         = shortcode_atts(array(
         'id'         => '',
@@ -191,7 +194,7 @@ function linkedUserDescription($atts) {
         'phone'     => false,
         'email'     => false,
         'style'     => '',
-   ), $atts);
+    ), $atts);
 
     $a['picture']    = filter_var($a['picture'], FILTER_VALIDATE_BOOLEAN);
     $a['phone']        = filter_var($a['phone'], FILTER_VALIDATE_BOOLEAN);
@@ -210,39 +213,39 @@ function linkedUserDescription($atts) {
     $userdata        = get_userdata($userId);
 
     if (!empty($a['style'])) {
-        $style = "style='" .$a['style']. "'";
-    }else{
+        $style = "style='" . $a['style'] . "'";
+    } else {
         $style = '';
     }
 
     $html = "<div $style>";
 
-        $nickname         = get_user_meta($userId, 'nickname', true);
-        $displayName     = "($userdata->display_name)";
-        if ($userdata->display_name == $nickname) {
-            $displayName     = '';
-        }
-        $privacyPreference     = (array)get_user_meta($userId, 'privacy_preference', true);
+    $nickname         = get_user_meta($userId, 'nickname', true);
+    $displayName     = "($userdata->display_name)";
+    if ($userdata->display_name == $nickname) {
+        $displayName     = '';
+    }
+    $privacyPreference     = (array)get_user_meta($userId, 'privacy_preference', true);
 
-        $url                 = TSJIPPY\maybeGetUserPageUrl($userId);
+    $url                 = TSJIPPY\maybeGetUserPageUrl($userId);
 
-        $profilePicture    = '';
-        if ($a['picture'] && !isset($privacyPreference['hide_profile_picture'])) {
-            $profilePicture = TSJIPPY\displayProfilePicture($userId);
-        }
-        $html .= "<a href='$url'>$profilePicture $nickname $displayName</a><br>";
+    $profilePicture    = '';
+    if ($a['picture'] && !isset($privacyPreference['hide_profile_picture'])) {
+        $profilePicture = TSJIPPY\displayProfilePicture($userId);
+    }
+    $html .= "<a href='$url'>$profilePicture $nickname $displayName</a><br>";
 
-        $html .= "<p style='margin-top:1.5em;'>";
-            if ($a['email']) {
-                $html .= "E-mail: <a href='mailto:$email'>$email</a><br>";
-            }
+    $html .= "<p style='margin-top:1.5em;'>";
+    if ($a['email']) {
+        $html .= "E-mail: <a href='mailto:$email'>$email</a><br>";
+    }
 
-            if ($a['phone']) {
-                $html .= showPhonenumbers($userId, true);
-            }
-        $html .= "</p>";
+    if ($a['phone']) {
+        $html .= showPhonenumbers($userId, true);
+    }
+    $html .= "</p>";
 
-    return $html. "</div>";
+    return $html . "</div>";
 }
 
 
@@ -255,13 +258,14 @@ function linkedUserDescription($atts) {
  *
  * @return string the pdf path or none
  */
-function createContactlistPdf($header, $data, $download=false) {
+function createContactlistPdf($header, $data, $download = false)
+{
     // Column headings
     $widths = array(30, 45, 30, 47, 45);
 
     //Built frontpage
     $pdf = new TSJIPPY\PDF\PdfHtml();
-    $pdf->frontpage(SITENAME. ' Contact List', gmdate('F'));
+    $pdf->frontpage(SITENAME . ' Contact List', gmdate('F'));
     $pdf->AddPage();
 
     //Write the table headers
@@ -281,18 +285,18 @@ function createContactlistPdf($header, $data, $download=false) {
     // Closing line
     $pdf->Cell(array_sum($widths), 0, '', 'T');
 
-    $contactList = "Contactlist - " .gmdate('F'). " .pdf";
+    $contactList = "Contactlist - " . gmdate('F') . " .pdf";
 
     $output        = 'F';
     if ($download === true) {
         // CLear the complete queue
         TSJIPPY\clearOutput();
         $output        = 'D';
-    }elseif ($download == 'screen') {
+    } elseif ($download == 'screen') {
         $pdf->printPdf();
         return '';
-    }else{
-        $contactList = get_temp_dir().SITENAME. " $contactList";
+    } else {
+        $contactList = get_temp_dir() . SITENAME . " $contactList";
     }
 
     $pdf->Output($output, $contactList);
@@ -305,7 +309,8 @@ function createContactlistPdf($header, $data, $download=false) {
  *
  * @return string pdf path
  */
-function buildUserDetailPdf($download=true) {
+function buildUserDetailPdf($download = true)
+{
 
     //Sort users on last name, then on first name
     $args = array(
@@ -313,16 +318,16 @@ function buildUserDetailPdf($download=true) {
             'relation'    => 'AND',
             'query_one' => array(
                 'key' => 'last_name'
-           ),
+            ),
             'query_two'    => array(
                 'key' => 'first_name'
-           ),
-       ),
+            ),
+        ),
         'orderby'    => array(
             'query_one' => 'ASC',
             'query_two' => 'ASC',
-       ),
-   );
+        ),
+    );
 
     $users = TSJIPPY\getUserAccounts(false, true, [], $args);
 
@@ -357,13 +362,13 @@ function buildUserDetailPdf($download=true) {
         $email    = $user->user_email;
 
         //Add to recipients
-        if (str_contains($user->user_email,' .empty')) {
+        if (str_contains($user->user_email, ' .empty')) {
             $email    = '';
         }
 
         $phonenumbers = [];
         if (empty($privacyPreference['hide_phone'])) {
-            $phonenumbers = (array)get_user_meta ( $user->ID, "phonenumbers", true);
+            $phonenumbers = (array)get_user_meta($user->ID, "phonenumbers", true);
         }
 
         $ministries = [];
@@ -371,7 +376,7 @@ function buildUserDetailPdf($download=true) {
             $userMinistries = get_user_meta($user->ID, "jobs", true);
 
             if (!empty($userMinistries)) {
-                foreach ($userMinistries as $key=>$userMinistry) {
+                foreach ($userMinistries as $key => $userMinistry) {
                     $title            = get_the_title($key);
                     if (!empty($title)) {
                         $ministries[]  = $title;
@@ -411,7 +416,7 @@ function buildUserDetailPdf($download=true) {
     }
 
     //Headers of the table
-    $tableHeaders = ["Name"," E-mail"," Phone"," Ministries"," State"];
+    $tableHeaders = ["Name", " E-mail", " Phone", " Ministries", " State"];
 
     //Create a pdf and add it to the mail
     return createContactlistPdf($tableHeaders, $userDetails, $download);

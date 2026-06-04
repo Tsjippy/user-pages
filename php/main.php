@@ -1,5 +1,7 @@
 <?php
+
 namespace TSJIPPY\USERPAGES;
+
 use TSJIPPY;
 
 add_filter('tsjippy_transform_formtable_data', __NAMESPACE__ . '\formtableData', 10, 2);
@@ -9,7 +11,8 @@ add_filter('tsjippy_transform_formtable_data', __NAMESPACE__ . '\formtableData',
  * @param string $elementSlug The slug of the element
  * @return string The transformed string
  */
-function formtableData($string, $elementSlug) {
+function formtableData($string, $elementSlug)
+{
     if ($elementSlug == 'user-id') {
         $output        = getUserPageLink($string);
         if ($output) {
@@ -27,9 +30,10 @@ add_filter('display_post_states', __NAMESPACE__ . '\postStates', 10, 2);
  * @param \WP_Post $post The post object
  * @return array The modified array of post states
  */
-function postStates($states, $post) {
+function postStates($states, $post)
+{
 
-    if ( $post->ID == (SETTINGS['all-contacts-page'] ?? false)) {
+    if ($post->ID == (SETTINGS['all-contacts-page'] ?? false)) {
         $states[] = __('Page showing all users', 'tsjippy');
     }
 
@@ -44,7 +48,8 @@ add_action('tsjippy_approved_user', __NAMESPACE__ . '\userApproved');
  * Handle the approval of a user
  * @param int $userId The ID of the approved user
  */
-function userApproved($userId) {
+function userApproved($userId)
+{
     if (get_user_meta($userId, 'disabled', true) == 'pending') {
         return;
     }
@@ -57,7 +62,8 @@ add_action('delete_user', __NAMESPACE__ . '\userDeleted');
  * Handle the deletion of a user
  * @param int $userId The ID of the deleted user
  */
-function userDeleted($userId) {
+function userDeleted($userId)
+{
     $family     = new TSJIPPY\FAMILY\Family();
     $partner    = $family->getPartner($userId, true);
 
@@ -70,7 +76,7 @@ function userDeleted($userId) {
             wp_delete_post($userPage);
             TSJIPPY\printArray("Deleted the user page $userPage");
         }
-    }else{
+    } else {
         //Get the partners display name to use as the new title
         $title = $partner->display_name;
 
@@ -87,7 +93,8 @@ add_filter('signal-admin-display-name', __NAMESPACE__ . '\getSenderDisplayName',
  *
  * @return string The display name of the sender
  */
-function getSenderDisplayName($displayName, $user) {
+function getSenderDisplayName($displayName, $user)
+{
     $sender    = getUserPageLink($user->ID);
 
     if (!$sender) {
