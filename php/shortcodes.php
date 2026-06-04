@@ -84,7 +84,7 @@ function allContacts()
             readfile('SIMContacts.zip');
 
             //remove the zip from the server
-            unlink('SIMContacts.zip');
+            wp_delete_file('SIMContacts.zip');
         } elseif ($_REQUEST['type'] == "pdf") {
             //Create a pdf and add it to the mail
             buildUserDetailPdf();
