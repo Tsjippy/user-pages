@@ -1,7 +1,7 @@
 <?php
 namespace TSJIPPY\USERPAGES;
 
-add_filter('tsjippy-events-event-url', __NAMESPACE__.'\eventUrl', 10, 3);
+add_filter('tsjippy-events-event-url', __NAMESPACE__ . '\eventUrl', 10, 3);
 /**
  * Modify the URL for an event based on the user ID
  * @param string $url The original URL
@@ -9,13 +9,13 @@ add_filter('tsjippy-events-event-url', __NAMESPACE__.'\eventUrl', 10, 3);
  * @param object $object The event object
  * @return string The modified URL
  */
-function eventUrl($url, $userId, $object){
+function eventUrl($url, $userId, $object) {
 
-    if(is_numeric($userId)){
+    if (is_numeric($userId)) {
         //Get the user page of this user
-        $link	= getUserPageLink($userId);
+        $link    = getUserPageLink($userId);
 
-        if($link){
+        if ($link) {
             $url    = $link;
         }
     }

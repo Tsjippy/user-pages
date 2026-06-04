@@ -3,179 +3,179 @@ namespace TSJIPPY\USERPAGES;
 use TSJIPPY;
 
 //Shortcode to download all contact info
-add_shortcode("all_contacts", __NAMESPACE__.'\allContacts');
-function allContacts(){
-	$shouldDie	= true;
+add_shortcode("all_contacts", __NAMESPACE__ . '\allContacts');
+function allContacts() {
+    $shouldDie    = true;
 
-	// get last download time
-	$lastDownload	= get_user_meta(get_current_user_id(), 'last_contact_download', true);
-	if(empty($lastDownload)){
-		$lastDownload	= strtotime('-1 year');
-	}
+    // get last download time
+    $lastDownload    = get_user_meta(get_current_user_id(), 'last_contact_download', true);
+    if (empty($lastDownload)) {
+        $lastDownload    = strtotime('-1 year');
+    }
 
-	$excludeChildren	= true;
-	if(isset($_REQUEST['children'])){
-		$excludeChildren	= false;
-	}
+    $excludeChildren    = true;
+    if (isset($_REQUEST['children'])) {
+        $excludeChildren    = false;
+    }
 
-	//Make vcard
-	if (isset($_REQUEST['type'])){
-		// store date
-		update_user_meta(get_current_user_id(), 'last_contact_download', time());
+    //Make vcard
+    if (isset($_REQUEST['type'])) {
+        // store date
+        update_user_meta(get_current_user_id(), 'last_contact_download', time());
 
-		if($_REQUEST['type'] == "web"){
-			$vcard = "";
-			
-			$users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID']);
-			foreach($users as $user){
-				$lastChanged	= get_user_meta($user->ID, 'phone-last-changed', true);
-				if(
-					(
-						!empty($_REQUEST['since'])									&&		// we only want new users since last download
-						(
-							strtotime($user->data->user_registered) > $lastDownload	||		// this user accont is created after our last download
-							!empty($lastChanged) && $lastChanged > $lastDownload			// phone number updated since last download
-						)
-					)	||
-					empty($_REQUEST['since'])												// we want all accounts
-				){
-					$vcard .= buildVcard($user->ID);
-				}
-			}
-			if(!empty($vcard)){
-				ob_end_clean();
-				header('Content-Type: text/x-vcard');
-				header('Content-Disposition: inline; filename= "SIMContacts.vcf"');
-				echo $vcard;
-			}else{
-				$shouldDie	= false;
-			}
-		}elseif($_REQUEST['type'] == "outlook"){
-			$zip = new \ZipArchive;
-			
-			if ($zip->open('SIMContacts.zip', \ZipArchive::CREATE) === true){
-				//Get all user accounts
-				$users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID','display_name']);
-				
-				//Loop over the accounts and add their vcards
-				foreach($users as $user){
-					if(
-						(
-							!empty($_REQUEST['since'])									&&		// we only want new users since last download
-							strtotime($user->data->user_registered) > $lastDownload				// this user accont is created after our last download
-						)	||
-						empty($_REQUEST['since'])												// we want all accounts
-					){
-						$zip->addFromString($user->display_name.'.vcf', buildVcard($user->ID));
-					}
-				}
-			 
-				// All files are added, so close the zip file.
-				$zip->close();
-			}
-	
-			ob_end_clean();
-			
-			header('Content-Type: application/zip');
-			header('Content-Disposition: inline; filename= "SIMContacts.zip"');
-			readfile('SIMContacts.zip');
-			
-			//remove the zip from the server
-			unlink('SIMContacts.zip');
-		}elseif($_REQUEST['type'] == "pdf"){
-			//Create a pdf and add it to the mail
-			buildUserDetailPdf();
-		}
+        if ($_REQUEST['type'] == "web") {
+            $vcard = "";
 
-		if($shouldDie){
-			die();
+            $users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID']);
+            foreach ($users as $user) {
+                $lastChanged    = get_user_meta($user->ID, 'phone-last-changed', true);
+                if (
+                    (
+                        !empty($_REQUEST['since'])                                    &&        // we only want new users since last download
+                        (
+                            strtotime($user->data->user_registered) > $lastDownload    ||        // this user accont is created after our last download
+                            !empty($lastChanged) && $lastChanged > $lastDownload            // phone number updated since last download
+                       )
+                   )    ||
+                    empty($_REQUEST['since'])                                                // we want all accounts
+               ) {
+                    $vcard .= buildVcard($user->ID);
+                }
+            }
+            if (!empty($vcard)) {
+                ob_end_clean();
+                header('Content-Type: text/x-vcard');
+                header('Content-Disposition: inline; filename= "SIMContacts.vcf"');
+                echo $vcard;
+            }else{
+                $shouldDie    = false;
+            }
+        }elseif ($_REQUEST['type'] == "outlook") {
+            $zip = new \ZipArchive;
 
-			return;
-		}
-	
-	}
+            if ($zip->open('SIMContacts.zip', \ZipArchive::CREATE) === true) {
+                //Get all user accounts
+                $users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID','display_name']);
 
-	//Return vcard hyperlink
-	ob_start();
-	if(!$shouldDie){
-		?>
-		<div class='warning'>
-			No new contact details to download since last time
-		</div>
-		<?php
-	}
-	?>
-	<script>
-		document.addEventListener('click', ev=>{
-			let target	= ev.target;
-			if(target.matches('.type-selector')){
-				ev.stopImmediatePropagation();
+                //Loop over the accounts and add their vcards
+                foreach ($users as $user) {
+                    if (
+                        (
+                            !empty($_REQUEST['since'])                                    &&        // we only want new users since last download
+                            strtotime($user->data->user_registered) > $lastDownload                // this user accont is created after our last download
+                       )    ||
+                        empty($_REQUEST['since'])                                                // we want all accounts
+                   ) {
+                        $zip->addFromString($user->display_name. ' .vcf', buildVcard($user->ID));
+                    }
+                }
 
-				if(target.value == 'pdf'){
-					document.querySelectorAll('.since-wrapper').forEach(el=>el.classList.add('hidden'));
-				}else{
-					document.querySelectorAll('.since-wrapper').forEach(el=>el.classList.remove('hidden'));
-				}
-			}
-		})
-	</script>
-	<div class='download contacts' style='margin-top:10px;'>
-		<h4>Add Contacts to Your Address Book</h4>
-		<p>
-			For your convenience, you can add contact details for SIM Nigeria’s team members to your phone or email address book.<br>
-			<br>
-			For Gmail and other email clients, simply import the .vcf file after selecting the button below.
-			For Outlook, you will download a compressed .zip file. Extract this, then click on each .vcf file to add it to your Outlook contacts list.
-		</p>
-		<form method='post'>
-			<label>Download type</label>
-			<br>
-			<label>
-				<input type='radio' class='type-selector' name='type' id='type' value='outlook' required>
-				Outlook
-			</label>
-			<label>
-				<input type='radio' class='type-selector' name='type' id='type' value='web' required>
-				Gmail
-			</label>
-			<label>
-				<input type='radio' class='type-selector' name='type' id='type' value='pdf' required>
-				PDF
-			</label>
+                // All files are added, so close the zip file.
+                $zip->close();
+            }
 
-			<br>
-			<br>
+            ob_end_clean();
 
-			<label>
-				<input type='checkbox' name='children' value='1'>
-				Also export childrens accounts
-			</label>
-			<br>
-			
-			<div class='since-wrapper hidden'>
-				<label>
-					<input type='checkbox' name='since' value='last' checked>
-					Download new user details since last download (<?php echo gmdate(DATEFORMAT, $lastDownload);?>)
-				</label>
-				<br>
-			</div>
-			<br>
+            header('Content-Type: application/zip');
+            header('Content-Disposition: inline; filename= "SIMContacts.zip"');
+            readfile('SIMContacts.zip');
 
-			<input type='submit' value='Start download' class='button'>
-		</form>
-		<br><br>
-		<p>Be patient, preparing the download can take a while. </p>
-		<?php
-		do_action('tsjippy-after-download-contacts');
-		?>
-	</div>
-	
-	<?php
-	return ob_get_clean();
+            //remove the zip from the server
+            unlink('SIMContacts.zip');
+        }elseif ($_REQUEST['type'] == "pdf") {
+            //Create a pdf and add it to the mail
+            buildUserDetailPdf();
+        }
+
+        if ($shouldDie) {
+            die();
+
+            return;
+        }
+
+    }
+
+    //Return vcard hyperlink
+    ob_start();
+    if (!$shouldDie) {
+        ?>
+        <div class='warning'>
+            No new contact details to download since last time
+        </div>
+        <?php
+    }
+    ?>
+    <script>
+        document.addEventListener('click', ev=>{
+            let target    = ev.target;
+            if (target.matches(' .type-selector')) {
+                ev.stopImmediatePropagation();
+
+                if (target.value == 'pdf') {
+                    document.querySelectorAll(' .since-wrapper').foreach (el=>el.classList.add('hidden'));
+                }else{
+                    document.querySelectorAll(' .since-wrapper').foreach (el=>el.classList.remove('hidden'));
+                }
+            }
+        })
+    </script>
+    <div class='download contacts' style='margin-top:10px;'>
+        <h4>Add Contacts to Your Address Book</h4>
+        <p>
+            For your convenience, you can add contact details for SIM Nigeria’s team members to your phone or email address book.<br>
+            <br>
+            For Gmail and other email clients, simply import the .vcf file after selecting the button below.
+            For Outlook, you will download a compressed .zip file. Extract this, then click on each .vcf file to add it to your Outlook contacts list.
+        </p>
+        <form method='post'>
+            <label>Download type</label>
+            <br>
+            <label>
+                <input type='radio' class='type-selector' name='type' id='type' value='outlook' required>
+                Outlook
+            </label>
+            <label>
+                <input type='radio' class='type-selector' name='type' id='type' value='web' required>
+                Gmail
+            </label>
+            <label>
+                <input type='radio' class='type-selector' name='type' id='type' value='pdf' required>
+                PDF
+            </label>
+
+            <br>
+            <br>
+
+            <label>
+                <input type='checkbox' name='children' value='1'>
+                Also export childrens accounts
+            </label>
+            <br>
+
+            <div class='since-wrapper hidden'>
+                <label>
+                    <input type='checkbox' name='since' value='last' checked>
+                    Download new user details since last download (<?php echo gmdate(DATEFORMAT, $lastDownload);?>)
+                </label>
+                <br>
+            </div>
+            <br>
+
+            <input type='submit' value='Start download' class='button'>
+        </form>
+        <br><br>
+        <p>Be patient, preparing the download can take a while. </p>
+        <?php
+        do_action('tsjippy-after-download-contacts');
+        ?>
+    </div>
+
+    <?php
+    return ob_get_clean();
 }
 
 // Shortcode to display a user in a page or post
-add_shortcode('user_link', __NAMESPACE__.'\linkedUserDescription');
+add_shortcode('user_link', __NAMESPACE__ . '\linkedUserDescription');
 
 /**
  * Displays a link to a user's profile page with optional contact information.
@@ -183,120 +183,120 @@ add_shortcode('user_link', __NAMESPACE__.'\linkedUserDescription');
  * @param array $atts The shortcode attributes.
  * @return string The HTML for the user link.
  */
-function linkedUserDescription($atts){
-	$html 	= "";
-	$a 		= shortcode_atts( array(
-        'id' 		=> '',
-		'picture' 	=> false,
-		'phone' 	=> false,
-		'email' 	=> false,
-		'style' 	=> '',
-    ), $atts );
+function linkedUserDescription($atts) {
+    $html     = "";
+    $a         = shortcode_atts(array(
+        'id'         => '',
+        'picture'     => false,
+        'phone'     => false,
+        'email'     => false,
+        'style'     => '',
+   ), $atts);
 
-	$a['picture']	= filter_var($a['picture'], FILTER_VALIDATE_BOOLEAN);
-	$a['phone']		= filter_var($a['phone'], FILTER_VALIDATE_BOOLEAN);
-	$a['email']		= filter_var($a['email'], FILTER_VALIDATE_BOOLEAN);
-	
-	$userId 		= $a['id'];
-    if(!is_numeric($userId)){
-		return 'Please enter an user to show the details of';
-	}
+    $a['picture']    = filter_var($a['picture'], FILTER_VALIDATE_BOOLEAN);
+    $a['phone']        = filter_var($a['phone'], FILTER_VALIDATE_BOOLEAN);
+    $a['email']        = filter_var($a['email'], FILTER_VALIDATE_BOOLEAN);
 
-	$userdata		= get_userdata($userId);
-	$email			= $userdata->user_email;
+    $userId         = $a['id'];
+    if (!is_numeric($userId)) {
+        return 'Please enter an user to show the details of';
+    }
 
-	$userId			= apply_filters('tsjippy-user-description-user-id', $userId);
+    $userdata        = get_userdata($userId);
+    $email            = $userdata->user_email;
 
-	$userdata		= get_userdata($userId);
-	
-	if(!empty($a['style'])){
-		$style = "style='".$a['style']."'";
-	}else{
-		$style = '';
-	}
-	
-	$html = "<div $style>";
-	
-		$nickname 		= get_user_meta($userId, 'nickname', true);
-		$displayName 	= "($userdata->display_name)";
-		if($userdata->display_name == $nickname){
-			$displayName 	= '';
-		}
-		$privacyPreference 	= (array)get_user_meta( $userId, 'privacy_preference', true );
-		
-		$url 				= TSJIPPY\maybeGetUserPageUrl($userId);
-		
-		$profilePicture	= '';
-		if($a['picture'] && !isset($privacyPreference['hide_profile_picture'])){
-			$profilePicture = TSJIPPY\displayProfilePicture($userId);
-		}
-		$html .= "<a href='$url'>$profilePicture $nickname $displayName</a><br>";
-		
-		$html .= "<p style='margin-top:1.5em;'>";
-			if($a['email']){
-				$html .= "E-mail: <a href='mailto:$email'>$email</a><br>";
-			}
-				
-			if($a['phone']){
-				$html .= showPhonenumbers($userId, true);
-			}
-		$html .= "</p>";
+    $userId            = apply_filters('tsjippy-user-description-user-id', $userId);
 
-	return $html."</div>";
+    $userdata        = get_userdata($userId);
+
+    if (!empty($a['style'])) {
+        $style = "style='" .$a['style']. "'";
+    }else{
+        $style = '';
+    }
+
+    $html = "<div $style>";
+
+        $nickname         = get_user_meta($userId, 'nickname', true);
+        $displayName     = "($userdata->display_name)";
+        if ($userdata->display_name == $nickname) {
+            $displayName     = '';
+        }
+        $privacyPreference     = (array)get_user_meta($userId, 'privacy_preference', true);
+
+        $url                 = TSJIPPY\maybeGetUserPageUrl($userId);
+
+        $profilePicture    = '';
+        if ($a['picture'] && !isset($privacyPreference['hide_profile_picture'])) {
+            $profilePicture = TSJIPPY\displayProfilePicture($userId);
+        }
+        $html .= "<a href='$url'>$profilePicture $nickname $displayName</a><br>";
+
+        $html .= "<p style='margin-top:1.5em;'>";
+            if ($a['email']) {
+                $html .= "E-mail: <a href='mailto:$email'>$email</a><br>";
+            }
+
+            if ($a['phone']) {
+                $html .= showPhonenumbers($userId, true);
+            }
+        $html .= "</p>";
+
+    return $html. "</div>";
 }
 
 
 /**
  * Export data in an PDF
  *
- * @param	array		$header 	The header text
- * @param	array		$data		The data
- * @param	bool|string	$download	Serve as downloadable file default false
+ * @param    array        $header     The header text
+ * @param    array        $data        The data
+ * @param    bool|string    $download    Serve as downloadable file default false
  *
  * @return string the pdf path or none
  */
 function createContactlistPdf($header, $data, $download=false) {
-	// Column headings
-	$widths = array(30, 45, 30, 47, 45);
-	
-	//Built frontpage
-	$pdf = new TSJIPPY\PDF\PdfHtml();
-	$pdf->frontpage(SITENAME.' Contact List', gmdate('F'));
-	$pdf->AddPage();
-	
-	//Write the table headers
-	$pdf->tableHeaders($header, $widths);
-	
+    // Column headings
+    $widths = array(30, 45, 30, 47, 45);
+
+    //Built frontpage
+    $pdf = new TSJIPPY\PDF\PdfHtml();
+    $pdf->frontpage(SITENAME. ' Contact List', gmdate('F'));
+    $pdf->AddPage();
+
+    //Write the table headers
+    $pdf->tableHeaders($header, $widths);
+
     // Data
     $fill = false;
-	//Loop over all the rows
-    foreach($data as $row){
-		// switch color only for rows for which the first cell has a value
-		if(!empty($row[0] )){
-			$fill = !$fill;
-		}
+    //Loop over all the rows
+    foreach ($data as $row) {
+        // switch color only for rows for which the first cell has a value
+        if (!empty($row[0])) {
+            $fill = !$fill;
+        }
 
-		$pdf->writeTableRow($widths, $row, $fill, $header);
+        $pdf->writeTableRow($widths, $row, $fill, $header);
     }
     // Closing line
     $pdf->Cell(array_sum($widths), 0, '', 'T');
-	
-	$contactList = "Contactlist - ".gmdate('F').".pdf";
 
-	$output		= 'F';
-	if($download === true){
-		// CLear the complete queue
-		TSJIPPY\clearOutput();
-		$output		= 'D';
-	}elseif($download == 'screen'){
-		$pdf->printPdf();
-		return '';
-	}else{
-		$contactList = get_temp_dir().SITENAME." $contactList";
-	}
+    $contactList = "Contactlist - " .gmdate('F'). " .pdf";
 
-	$pdf->Output( $output, $contactList);
-	
+    $output        = 'F';
+    if ($download === true) {
+        // CLear the complete queue
+        TSJIPPY\clearOutput();
+        $output        = 'D';
+    }elseif ($download == 'screen') {
+        $pdf->printPdf();
+        return '';
+    }else{
+        $contactList = get_temp_dir().SITENAME. " $contactList";
+    }
+
+    $pdf->Output($output, $contactList);
+
     return $contactList;
 }
 
@@ -305,114 +305,114 @@ function createContactlistPdf($header, $data, $download=false) {
  *
  * @return string pdf path
  */
-function buildUserDetailPdf($download=true){
-		
-	//Sort users on last name, then on first name
-	$args = array(
-		'meta_query' => array(
-			'relation'	=> 'AND',
-			'query_one' => array(
-				'key' => 'last_name'
-			),
-			'query_two'	=> array(
-				'key' => 'first_name'
-			),
-		),
-		'orderby'	=> array(
-			'query_one' => 'ASC',
-			'query_two' => 'ASC',
-		),
-	);
-	
-	$users = TSJIPPY\getUserAccounts(false, true, [], $args);
+function buildUserDetailPdf($download=true) {
 
-	//Loop over all users to add a row with their data to the table
-	$userDetails 	= [];
+    //Sort users on last name, then on first name
+    $args = array(
+        'meta_query' => array(
+            'relation'    => 'AND',
+            'query_one' => array(
+                'key' => 'last_name'
+           ),
+            'query_two'    => array(
+                'key' => 'first_name'
+           ),
+       ),
+        'orderby'    => array(
+            'query_one' => 'ASC',
+            'query_two' => 'ASC',
+       ),
+   );
 
-	foreach($users as $user){
-		//skip admin
-		if ($user->ID == 1){
-			continue;
-		}
+    $users = TSJIPPY\getUserAccounts(false, true, [], $args);
 
-		$privacyPreference = get_user_meta( $user->ID, 'privacy_preference', true );
-		if(!is_array($privacyPreference)){
-			$privacyPreference = [];
-		}
-		
-		$name			= $user->display_name; //Real name
-		$nickname		= get_user_meta($user->ID, 'nickname', true); //persons name in case of a office account
-		if($name != $nickname && $nickname != ''){
-			$name .= "\n ($nickname)";
-		}
+    //Loop over all users to add a row with their data to the table
+    $userDetails     = [];
 
-		$profilePicture	= TSJIPPY\USERMANAGEMENT\getProfilePicturePath($user->ID);
-		if($profilePicture){
-			$name	= [
-				'picture'	=> $profilePicture,
-				'name'		=> $name
-			];
-		}
-		
-		$email	= $user->user_email;
-		
-		//Add to recipients
-		if (str_contains($user->user_email,'.empty')){
-			$email	= '';
-		}
-		
-		$phonenumbers = [];
-		if(empty($privacyPreference['hide_phone'])){
-			$phonenumbers = (array)get_user_meta ( $user->ID, "phonenumbers", true);
-		}
-		
-		$ministries = [];
-		if(empty($privacyPreference['hide_ministry'])){
-			$userMinistries = get_user_meta( $user->ID, "jobs", true);
+    foreach ($users as $user) {
+        //skip admin
+        if ($user->ID == 1) {
+            continue;
+        }
 
-			if(!empty($userMinistries)){
-				foreach ($userMinistries as $key=>$userMinistry) {
-					$title			= get_the_title($key);
-					if(!empty($title)){
-						$ministries[]  = $title;
-					}
-				}
-			}
-		}
-		
-		$location = "";
-		if(empty($privacyPreference['hide_location'])){
-			$locationDetails = (array)get_user_meta( $user->ID, 'location', true );
-			if(isset($locationDetails['location'])){
-				$location = $locationDetails['location'];
-			}
-		}
+        $privacyPreference = get_user_meta($user->ID, 'privacy_preference', true);
+        if (!is_array($privacyPreference)) {
+            $privacyPreference = [];
+        }
 
-		$userDetails[] 	= [$name, $email, $phonenumbers, $ministries, $location];
+        $name            = $user->display_name; //Real name
+        $nickname        = get_user_meta($user->ID, 'nickname', true); //persons name in case of a office account
+        if ($name != $nickname && $nickname != '') {
+            $name .= "\n ($nickname)";
+        }
 
-		// create a seperate row for each phonenumber and ministry
-		/* 		$rows			= max(count($phonenumbers), count($ministries), 1);
-		for ($x = 0; $x < $rows; $x++) {
-			$phonenumber	= '';
-			if(isset($phonenumbers[$x])){
-				$phonenumber	= $phonenumbers[$x];
-			}
+        $profilePicture    = TSJIPPY\USERMANAGEMENT\getProfilePicturePath($user->ID);
+        if ($profilePicture) {
+            $name    = [
+                'picture'    => $profilePicture,
+                'name'        => $name
+            ];
+        }
 
-			$ministry	= '';
-			if(isset($ministries[$x])){
-				$ministry	= $ministries[$x];
-			}
+        $email    = $user->user_email;
 
-			$userDetails[] 	= [$name, $email, $phonenumber, $ministry, $location];
-			$name		= '';
-			$email		= '';
-			$location	= '';
-		} */
-	}
+        //Add to recipients
+        if (str_contains($user->user_email,' .empty')) {
+            $email    = '';
+        }
 
-	//Headers of the table
-	$tableHeaders = ["Name"," E-mail"," Phone"," Ministries"," State"];
+        $phonenumbers = [];
+        if (empty($privacyPreference['hide_phone'])) {
+            $phonenumbers = (array)get_user_meta ( $user->ID, "phonenumbers", true);
+        }
 
-	//Create a pdf and add it to the mail
-	return createContactlistPdf($tableHeaders, $userDetails, $download);
+        $ministries = [];
+        if (empty($privacyPreference['hide_ministry'])) {
+            $userMinistries = get_user_meta($user->ID, "jobs", true);
+
+            if (!empty($userMinistries)) {
+                foreach ($userMinistries as $key=>$userMinistry) {
+                    $title            = get_the_title($key);
+                    if (!empty($title)) {
+                        $ministries[]  = $title;
+                    }
+                }
+            }
+        }
+
+        $location = "";
+        if (empty($privacyPreference['hide_location'])) {
+            $locationDetails = (array)get_user_meta($user->ID, 'location', true);
+            if (isset($locationDetails['location'])) {
+                $location = $locationDetails['location'];
+            }
+        }
+
+        $userDetails[]     = [$name, $email, $phonenumbers, $ministries, $location];
+
+        // create a seperate row for each phonenumber and ministry
+        /*         $rows            = max(count($phonenumbers), count($ministries), 1);
+        for ($x = 0; $x < $rows; $x++) {
+            $phonenumber    = '';
+            if (isset($phonenumbers[$x])) {
+                $phonenumber    = $phonenumbers[$x];
+            }
+
+            $ministry    = '';
+            if (isset($ministries[$x])) {
+                $ministry    = $ministries[$x];
+            }
+
+            $userDetails[]     = [$name, $email, $phonenumber, $ministry, $location];
+            $name        = '';
+            $email        = '';
+            $location    = '';
+        } */
+    }
+
+    //Headers of the table
+    $tableHeaders = ["Name"," E-mail"," Phone"," Ministries"," State"];
+
+    //Create a pdf and add it to the mail
+    return createContactlistPdf($tableHeaders, $userDetails, $download);
 }
