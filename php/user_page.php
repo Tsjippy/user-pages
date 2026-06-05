@@ -460,7 +460,7 @@ function addVcardDownload($userId)
         //ob_start();
         $userId = $_GET['vcard'];
         header('Content-Type: text/x-vcard');
-        header('Content-Disposition: inline; filename= "' . get_userdata($userId)->data->display_name . ' .vcf"');
+        header('Content-Disposition: inline; filename= "' . get_userdata($userId)->data->display_name . '.vcf"');
 
         $vcard = buildVcard($userId);
         echo $vcard;

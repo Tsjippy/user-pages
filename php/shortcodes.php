@@ -69,7 +69,7 @@ function allContacts()
                         )    ||
                         empty($_REQUEST['since'])                                                // we want all accounts
                     ) {
-                        $zip->addFromString($user->display_name . ' .vcf', buildVcard($user->ID));
+                        $zip->addFromString($user->display_name . '.vcf', buildVcard($user->ID));
                     }
                 }
 
@@ -110,13 +110,13 @@ function allContacts()
     <script>
         document.addEventListener('click', ev => {
             let target = ev.target;
-            if (target.matches(' .type-selector')) {
+            if (target.matches('.type-selector')) {
                 ev.stopImmediatePropagation();
 
                 if (target.value == 'pdf') {
-                    document.querySelectorAll(' .since-wrapper').forEach(el => el.classList.add('hidden'));
+                    document.querySelectorAll('.since-wrapper').forEach(el => el.classList.add('hidden'));
                 } else {
-                    document.querySelectorAll(' .since-wrapper').forEach(el => el.classList.remove('hidden'));
+                    document.querySelectorAll('.since-wrapper').forEach(el => el.classList.remove('hidden'));
                 }
             }
         })
@@ -285,7 +285,7 @@ function createContactlistPdf($header, $data, $download = false)
     // Closing line
     $pdf->Cell(array_sum($widths), 0, '', 'T');
 
-    $contactList = "Contactlist - " . gmdate('F') . " .pdf";
+    $contactList = "Contactlist - " . gmdate('F') . ".pdf";
 
     $output        = 'F';
     if ($download === true) {
@@ -362,7 +362,7 @@ function buildUserDetailPdf($download = true)
         $email    = $user->user_email;
 
         //Add to recipients
-        if (str_contains($user->user_email, ' .empty')) {
+        if (str_contains($user->user_email, '.empty')) {
             $email    = '';
         }
 
