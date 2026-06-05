@@ -43,7 +43,7 @@ function postStates($states, $post)
 /**
  * Create a user page on user registration or approval
  */
-add_action('tsjippy_approved_user', __NAMESPACE__ . '\userApproved');
+add_action('tsjippy-approved-user', __NAMESPACE__ . '\userApproved');
 /**
  * Handle the approval of a user
  * @param int $userId The ID of the approved user
