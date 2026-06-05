@@ -114,9 +114,9 @@ function allContacts()
                 ev.stopImmediatePropagation();
 
                 if (target.value == 'pdf') {
-                    document.querySelectorAll(' .since-wrapper').foreach(el => el.classList.add('hidden'));
+                    document.querySelectorAll(' .since-wrapper').forEach(el => el.classList.add('hidden'));
                 } else {
-                    document.querySelectorAll(' .since-wrapper').foreach(el => el.classList.remove('hidden'));
+                    document.querySelectorAll(' .since-wrapper').forEach(el => el.classList.remove('hidden'));
                 }
             }
         })
