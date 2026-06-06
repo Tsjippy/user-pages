@@ -505,7 +505,7 @@ function buildVcard($userId)
         $vcard .= "FN:" . $userdata->data->display_name . "\r\n";
         $vcard .= "N:" . $userdata->last_name . ";" . $userdata->first_name . ";;;\r\n";
     }
-    $vcard .= "ORG:" . SITENAME . "\r\n";
+    $vcard .= "ORG:" . TSJIPPY\SITENAME . "\r\n";
     $vcard .= "EMAIL;TYPE=INTERNET;TYPE=WORK:" . $userdata->user_email . "\r\n";
 
     if (empty($privacyPreference['hide_phone'])) {
