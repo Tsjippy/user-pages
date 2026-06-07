@@ -9,7 +9,7 @@ function restApiInit()
 {
     // show schedules
     register_rest_route(
-        TSJIPPY\RESTAPIPREFIXPIPREFIX . '/userpage',
+        TSJIPPY\RESTAPIPREFIX . '/userpage',
         '/linked_user_description',
         array(
             'methods'                 => 'GET',

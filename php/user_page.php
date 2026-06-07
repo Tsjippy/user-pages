@@ -458,7 +458,7 @@ function addVcardDownload($userId)
     if (isset($_GET['vcard'])) {
         ob_end_clean();
         //ob_start();
-        $userId = $_GET['vcard'];
+        $userId = (int) $_GET['vcard'];
         header('Content-Type: text/x-vcard');
         header('Content-Disposition: inline; filename= "' . get_userdata($userId)->data->display_name . '.vcf"');
 
