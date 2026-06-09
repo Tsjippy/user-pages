@@ -34,7 +34,7 @@ function postStates($states, $post)
 {
 
     if ($post->ID == (SETTINGS['all-contacts-page'] ?? false)) {
-        $states[] = __('Page showing all users', 'tsjippy');
+        $states[] = __('Page showing all users', '%TEXTDOMAIN%');
     }
 
     return $states;
