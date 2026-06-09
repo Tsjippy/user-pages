@@ -46,13 +46,13 @@ function createUserPage($userId)
         $pageId = wp_insert_post($userPage);
 
         //Save user id as meta to the post
-        update_post_meta($pageId, 'user_id', $userId);
+        update_post_meta($pageId, 'tsjippy_user_id', $userId);
 
         // make static
-        update_post_meta($pageId, 'static_content', true);
+        update_post_meta($pageId, 'tsjippy_static_content', true);
 
         // Store for the user
-        update_user_meta($userId, "user_page_id", $pageId);
+        update_user_meta($userId, "tsjippy_user_page_id", $pageId);
 
         TSJIPPY\printArray("Created user page with id $pageId");
     } else {
@@ -624,7 +624,7 @@ function addUserDescription($content)
         $postId     = get_the_ID();
 
         //user page
-        $userId = get_post_meta($postId, 'user_id', true);
+        $userId = get_post_meta($postId, 'tsjippy_user_id', true);
         if (is_numeric($userId)) {
             $content .= userDescription($userId);
         }
