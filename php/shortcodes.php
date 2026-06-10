@@ -11,7 +11,7 @@ function allContacts()
     $shouldDie    = true;
 
     // get last download time
-    $lastDownload    = get_user_meta(get_current_user_id(), 'last_contact_download', true);
+    $lastDownload    = get_user_meta(get_current_user_id(), 'tsjippy_last_contact_download', true);
     if (empty($lastDownload)) {
         $lastDownload    = strtotime('-1 year');
     }
@@ -24,14 +24,14 @@ function allContacts()
     //Make vcard
     if (isset($_REQUEST['type'])) {
         // store date
-        update_user_meta(get_current_user_id(), 'last_contact_download', time());
+        update_user_meta(get_current_user_id(), 'tsjippy_last_contact_download', time());
 
         if ($_REQUEST['type'] == "web") {
             $vcard = "";
 
             $users = TSJIPPY\getUserAccounts(false, $excludeChildren, ['ID']);
             foreach ($users as $user) {
-                $lastChanged    = get_user_meta($user->ID, 'phone-last-changed', true);
+                $lastChanged    = get_user_meta($user->ID, 'tsjippy_phone-last-changed', true);
                 if (
                     (
                         !empty($_REQUEST['since'])                                    &&        // we only want new users since last download
@@ -220,12 +220,12 @@ function linkedUserDescription($atts)
 
     $html = "<div $style>";
 
-    $nickname         = get_user_meta($userId, 'nickname', true);
+    $nickname         = get_user_meta($userId, 'tsjippy_nickname', true);
     $displayName     = "($userdata->display_name)";
     if ($userdata->display_name == $nickname) {
         $displayName     = '';
     }
-    $privacyPreference     = (array)get_user_meta($userId, 'privacy_preference', true);
+    $privacyPreference     = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
 
     $url                 = TSJIPPY\maybeGetUserPageUrl($userId);
 
@@ -340,13 +340,13 @@ function buildUserDetailPdf($download = true)
             continue;
         }
 
-        $privacyPreference = get_user_meta($user->ID, 'privacy_preference', true);
+        $privacyPreference = get_user_meta($user->ID, 'tsjippy_privacy_preference', true);
         if (!is_array($privacyPreference)) {
             $privacyPreference = [];
         }
 
         $name            = $user->display_name; //Real name
-        $nickname        = get_user_meta($user->ID, 'nickname', true); //persons name in case of a office account
+        $nickname        = get_user_meta($user->ID, 'tsjippy_nickname', true); //persons name in case of a office account
         if ($name != $nickname && $nickname != '') {
             $name .= "\n ($nickname)";
         }
@@ -368,12 +368,12 @@ function buildUserDetailPdf($download = true)
 
         $phonenumbers = [];
         if (empty($privacyPreference['hide_phone'])) {
-            $phonenumbers = (array)get_user_meta($user->ID, "phonenumbers", true);
+            $phonenumbers = (array)get_user_meta($user->ID, "tsjippy_phonenumbers", true);
         }
 
         $ministries = [];
         if (empty($privacyPreference['hide_ministry'])) {
-            $userMinistries = get_user_meta($user->ID, "jobs", true);
+            $userMinistries = get_user_meta($user->ID, "tsjippy_jobs", true);
 
             if (!empty($userMinistries)) {
                 foreach ($userMinistries as $key => $userMinistry) {
@@ -387,7 +387,7 @@ function buildUserDetailPdf($download = true)
 
         $location = "";
         if (empty($privacyPreference['hide_location'])) {
-            $locationDetails = (array)get_user_meta($user->ID, 'location', true);
+            $locationDetails = (array)get_user_meta($user->ID, 'tsjippy_location', true);
             if (isset($locationDetails['location'])) {
                 $location = $locationDetails['location'];
             }

@@ -50,7 +50,7 @@ add_action('tsjippy-approved-user', __NAMESPACE__ . '\userApproved');
  */
 function userApproved($userId)
 {
-    if (get_user_meta($userId, 'disabled', true) == 'pending') {
+    if (get_user_meta($userId, 'tsjippy_disabled', true) == 'pending') {
         return;
     }
 

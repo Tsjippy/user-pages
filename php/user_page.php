@@ -63,7 +63,7 @@ function createUserPage($userId)
         //Check if family has other pages who should be deleted
         foreach ($family as $familyMember) {
             //get the current page
-            $memberPageId = get_user_meta($familyMember, "user_page_id", true);
+            $memberPageId = get_user_meta($familyMember, "tsjippy_user_page_id", true);
 
             //Check if this page exists and is already trashed
             if (get_post_status($memberPageId) == 'trash') {
@@ -165,18 +165,18 @@ function userDescription($userId)
 
     do_action('tsjippy_user_description', $user);
 
-    $privacyPreference = get_user_meta($userId, 'privacy_preference', true);
+    $privacyPreference = get_user_meta($userId, 'tsjippy_privacy_preference', true);
     if (!is_array($privacyPreference)) {
         $privacyPreference = [];
     }
 
-    $sendingOffice     = get_user_meta($userId, 'sending_office', true);
+    $sendingOffice     = get_user_meta($userId, 'tsjippy_sending_office', true);
     $officeHtml        = '';
     if (!empty($sendingOffice)) {
         $officeHtml = "<p>Sending office: $sendingOffice</p>";
     }
 
-    $arrivalDate     = get_user_meta($userId, 'arrival_date', true);
+    $arrivalDate     = get_user_meta($userId, 'tsjippy_arrival_date', true);
     $arrivalHtml    = '';
     $arrived        = true;
     if (!empty($arrivalDate) && !isset($privacyPreference['hide_anniversary'])) {
@@ -191,7 +191,7 @@ function userDescription($userId)
     }
 
     //Find location or address
-    $location    = get_user_meta($userId, 'location', true);
+    $location    = get_user_meta($userId, 'tsjippy_location', true);
     $address    = "No address provided. ";
     if (get_current_user_id() == $userId) {
         $url                    = get_permalink(SETTINGS['account_page'] ?? '');
@@ -211,10 +211,10 @@ function userDescription($userId)
     }
 
     //Build the html
-    $siblings    = get_user_meta($userId, 'siblings');
-    $picture    = get_user_meta($userId, 'picture', true);
-    $partner    = get_user_meta($userId, 'partner', true);
-    $children    = get_user_meta($userId, 'children');
+    $siblings    = get_user_meta($userId, 'tsjippy_siblings');
+    $picture    = get_user_meta($userId, 'tsjippy_picture', true);
+    $partner    = get_user_meta($userId, 'tsjippy_partner', true);
+    $children    = get_user_meta($userId, 'tsjippy_children');
 
     if (!empty($partner)) {
         $html .= "<h1>$user->last_name family</h1>";
@@ -309,7 +309,7 @@ function userDescription($userId)
             $html .= showPhonenumbers($userId);
 
             if (!empty($siblings)) {
-                $gender     = get_user_meta($userId, 'gender', true);
+                $gender     = get_user_meta($userId, 'tsjippy_gender', true);
                 if (is_array($gender)) {
                     if (isset($gender[0])) {
                         $gender    = $gender[0];
@@ -355,7 +355,7 @@ function showUserInfo($userId, $arrived)
 {
     $html                = "";
     $userdata            = get_userdata($userId);
-    $privacyPreference     = (array)get_user_meta($userId, 'privacy_preference', true);
+    $privacyPreference     = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
 
     //If it is a valid user and privacy allows us to show it
     if ($userdata != null) {
@@ -395,12 +395,12 @@ function showUserInfo($userId, $arrived)
  */
 function showPhonenumbers($userId, $clean = false)
 {
-    $privacyPreference = (array)get_user_meta($userId, 'privacy_preference', true);
+    $privacyPreference = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
 
     $html = "";
     if (!isset($privacyPreference['hide_phone'])) {
-        $phonenumbers    = get_user_meta($userId, 'phonenumbers', true);
-        $signalNumber    = get_user_meta($userId, 'signal_number', true);
+        $phonenumbers    = get_user_meta($userId, 'tsjippy_phonenumbers', true);
+        $signalNumber    = get_user_meta($userId, 'tsjippy_signal_number', true);
         $email            = get_userdata($userId)->user_email;
 
         $icon   = '<svg width="20px" height="20px" style="margin-left: 10px;">';
@@ -485,18 +485,18 @@ function buildVcard($userId)
     //Get the user partner
     $partner = $family->getPartner($userId, true);
 
-    $privacyPreference = (array)get_user_meta($userId, 'privacy_preference', true);
+    $privacyPreference = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
 
     if (empty($privacyPreference['hide_location'])) {
         //Get the user address
-        $location = get_user_meta($userId, 'location', true);
+        $location = get_user_meta($userId, 'tsjippy_location', true);
         if (!empty($location['address'])) {
             $address     = $location['address'];
             $lat         = $location['latitude'];
             $lon         = $location['longitude'];
         }
     }
-    $gender     = get_user_meta($userId, 'gender', true);
+    $gender     = get_user_meta($userId, 'tsjippy_gender', true);
     $userdata     = get_userdata($userId);
 
     $vcard = "BEGIN:VCARD\r\n";
@@ -509,7 +509,7 @@ function buildVcard($userId)
     $vcard .= "EMAIL;TYPE=INTERNET;TYPE=WORK:" . $userdata->user_email . "\r\n";
 
     if (empty($privacyPreference['hide_phone'])) {
-        $phonenumbers = get_user_meta($userId, 'phonenumbers', true);
+        $phonenumbers = get_user_meta($userId, 'tsjippy_phonenumbers', true);
         if (is_array($phonenumbers)) {
             foreach ($phonenumbers as $key => $phonenumber) {
                 switch ($key) {
@@ -533,7 +533,7 @@ function buildVcard($userId)
         $vcard .= "ADR;TYPE=HOME:;;$address\r\n";
         $vcard .= "GEO:geo:" . $lat . "," . $lon . "\r\n";
     }
-    $vcard .= "BDAY:" . str_replace("-", "", get_user_meta($userId, "birthday", true)) . "\r\n";
+    $vcard .= "BDAY:" . str_replace("-", "", get_user_meta($userId, "tsjippy_birthday", true)) . "\r\n";
     if ($partner) {
         $vcard .= "item1.X-ABRELATEDNAMES:" . $partner->display_name . "\r\n";
         $vcard .= 'item1.X-ABLabel:_$!<Spouse>!$_';
@@ -549,7 +549,7 @@ function buildVcard($userId)
     }
 
     //User has an profile picture add it
-    if (is_numeric(get_user_meta($userId, 'profile_picture', true)) && empty($privacyPreference['hide_profile_picture'])) {
+    if (is_numeric(get_user_meta($userId, 'tsjippy_profile_picture', true)) && empty($privacyPreference['hide_profile_picture'])) {
         $pictureUrl                = TSJIPPY\USERMANAGEMENT\getProfilePictureUrl($userId, "large");
         if ($pictureUrl) {
             $pictureUrl             = str_replace(wp_upload_dir()['url'], wp_upload_dir()['basedir'], $pictureUrl);
@@ -574,7 +574,7 @@ function buildVcard($userId)
  */
 function addMinistryLinks($userId)
 {
-    $userMinistries = (array)get_user_meta($userId, "jobs", true);
+    $userMinistries = (array)get_user_meta($userId, "tsjippy_jobs", true);
 
     $html = "";
     foreach ($userMinistries as $key => $userMinistry) {
@@ -641,7 +641,7 @@ function addUserDescription($content)
  */
 function getUserPageId($userId)
 {
-    return get_user_meta($userId, "user_page_id", true);
+    return get_user_meta($userId, "tsjippy_user_page_id", true);
 }
 
 /**
