@@ -40,6 +40,11 @@ define(__NAMESPACE__ . '\SETTINGS', get_option('tsjippy_' . PLUGINSLUG . '_setti
 
 // run right before activation
 register_activation_hook(__FILE__, function () {
+    // Load shared code
+    if(file_exists(__DIR__  . '/shared-functionality/loader.php')){
+        require_once(__DIR__  . '/shared-functionality/loader.php');
+    }
+    
     // Create account page
     $settings    = SETTINGS;
 
