@@ -48,7 +48,7 @@ register_activation_hook(__FILE__, function () {
     // Create account page
     $settings    = SETTINGS;
 
-    $settings['all-contacts-page']    = TSJIPPY\ADMIN\createDefaultPage('All Users', '[all_contacts]');
+    $settings['all-contacts-page']    = TSJIPPY\ADMIN\createDefaultPage('All Users', '[tsjippy_all_contacts]');
 
     update_option('tsjippy_' . PLUGINSLUG . '_settings', $settings);
 });
