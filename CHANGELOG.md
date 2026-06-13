@@ -6,11 +6,16 @@
 ### Changed
 
 ### Fixed
+
+### Updated
+
+## [10.1.6] - 2026-06-13
+
+
+### Fixed
 - shared code loader
 - activation hook
 - use correct shortcodes on auto created pages
-
-### Updated
 
 ## [10.1.5] - 2026-06-11
 
