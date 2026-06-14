@@ -11,9 +11,9 @@ add_filter('tsjippy_transform_formtable_data', __NAMESPACE__ . '\formtableData',
  * @param string $elementSlug The slug of the element
  * @return string The transformed string
  */
-function formtableData($string, $elementSlug)
+function formtableData($string, $element)
 {
-    if ($elementSlug == 'user-id') {
+    if ($element->slug == 'user-id') {
         $output        = getUserPageLink($string);
         if ($output) {
             $string    = $output;
