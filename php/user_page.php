@@ -163,7 +163,7 @@ function userDescription($userId)
 
     $user    = get_userdata($userId);
 
-    do_action('tsjippy_user_description', $user);
+    do_action('tsjippy-user-description', $user);
 
     $privacyPreference = get_user_meta($userId, 'tsjippy_privacy_preference', true);
     if (!is_array($privacyPreference)) {

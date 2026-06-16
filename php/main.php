@@ -4,7 +4,7 @@ namespace TSJIPPY\USERPAGES;
 
 use TSJIPPY;
 
-add_filter('tsjippy_transform_formtable_data', __NAMESPACE__ . '\formtableData', 10, 2);
+add_filter('tsjippy-transform-formtable-data', __NAMESPACE__ . '\formtableData', 10, 2);
 /**
  * Transform the data for a form table element
  * @param string $string The original string
