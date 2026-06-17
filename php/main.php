@@ -43,7 +43,7 @@ function postStates($states, $post)
 /**
  * Create a user page on user registration or approval
  */
-add_action('tsjippy-approved-user', __NAMESPACE__ . '\userApproved');
+add_action('tsjippy-user-management-approved-user', __NAMESPACE__ . '\userApproved');
 /**
  * Handle the approval of a user
  * @param int $userId The ID of the approved user
@@ -85,7 +85,7 @@ function userDeleted($userId)
     }
 }
 
-add_filter('signal-admin-display-name', __NAMESPACE__ . '\getSenderDisplayName', 10, 2);
+add_filter('tsjippy-signal-admin-display-name', __NAMESPACE__ . '\getSenderDisplayName', 10, 2);
 /**
  * Get the display name of the sender of a message. This is used in the admin menu of the signal plugin to show the name of the sender instead of the phone number
  * @param string $displayName The display name of the sender

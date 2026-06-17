@@ -168,7 +168,7 @@ function allContacts()
         <br><br>
         <p>Be patient, preparing the download can take a while. </p>
         <?php
-        do_action('tsjippy-after-download-contacts');
+        do_action('tsjippy-user-pages-after-download-contacts');
         ?>
     </div>
 
@@ -208,7 +208,7 @@ function linkedUserDescription($atts)
     $userdata        = get_userdata($userId);
     $email            = $userdata->user_email;
 
-    $userId            = apply_filters('tsjippy-user-description-user-id', $userId);
+    $userId            = apply_filters('tsjippy-user-pages-description-user-id', $userId);
 
     $userdata        = get_userdata($userId);
 
