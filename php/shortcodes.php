@@ -81,7 +81,8 @@ function allContacts()
 
             header('Content-Type: application/zip');
             header('Content-Disposition: inline; filename= "SIMContacts.zip"');
-            readfile('SIMContacts.zip');
+            $wpFileSystem   = TSJIPPY\loadWpFileSystem();
+            echo $wpFileSystem->get_contents('SIMContacts.zip');
 
             //remove the zip from the server
             wp_delete_file('SIMContacts.zip');
