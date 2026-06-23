@@ -2,13 +2,18 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- do not show user page in news gallery
 
 ### Changed
 
 ### Fixed
 
 ### Updated
+
+## [10.2.5] - 2026-06-23
+
+
+### Added
+- do not show user page in news gallery
 
 ## [10.2.4] - 2026-06-23
 
