@@ -6,9 +6,14 @@
 ### Changed
 
 ### Fixed
-- hook names
 
 ### Updated
+
+## [10.2.7] - 2026-06-23
+
+
+### Fixed
+- hook names
 
 ## [10.2.6] - 2026-06-23
 
