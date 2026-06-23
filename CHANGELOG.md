@@ -2,6 +2,7 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- do not show user page in news gallery
 
 ### Changed
 
