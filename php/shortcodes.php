@@ -369,7 +369,7 @@ function buildUserDetailPdf($download = true)
 
         $phonenumbers = [];
         if (empty($privacyPreference['hide_phone'])) {
-            $phonenumbers = (array)get_user_meta($user->ID, "tsjippy_phonenumbers", true);
+            $phonenumbers = get_user_meta($user->ID, "tsjippy_phonenumbers");
         }
 
         $ministries = [];

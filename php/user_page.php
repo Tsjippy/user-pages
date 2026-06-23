@@ -51,7 +51,7 @@ function createUserPage($userId)
         // make static
         update_post_meta($pageId, 'tsjippy_static_content', true);
 
-        // Do not show in page gallery
+        // Do not show in news gallery
         update_post_meta($pageId, 'tsjippy_skipgallery', true);
 
         // Store for the user
@@ -402,9 +402,9 @@ function showPhonenumbers($userId, $clean = false)
 
     $html = "";
     if (!isset($privacyPreference['hide_phone'])) {
-        $phonenumbers    = get_user_meta($userId, 'tsjippy_phonenumbers', true);
+        $phonenumbers    = get_user_meta($userId, 'tsjippy_phonenumbers');
         $signalNumber    = get_user_meta($userId, 'tsjippy_signal_number', true);
-        $email            = get_userdata($userId)->user_email;
+        $email           = get_userdata($userId)->user_email;
 
         $icon   = '<svg width="20px" height="20px" style="margin-left: 10px;">';
         $icon   .= '<g transform="matrix(0.15625 0 0 0.15625 0 0)">';
@@ -512,24 +512,22 @@ function buildVcard($userId)
     $vcard .= "EMAIL;TYPE=INTERNET;TYPE=WORK:" . $userdata->user_email . "\r\n";
 
     if (empty($privacyPreference['hide_phone'])) {
-        $phonenumbers = get_user_meta($userId, 'tsjippy_phonenumbers', true);
-        if (is_array($phonenumbers)) {
-            foreach ($phonenumbers as $key => $phonenumber) {
-                switch ($key) {
-                    case 0:
-                        $type = "cell";
-                        break;
-                    case 1:
-                        $type = "home";
-                        break;
-                    case 2:
-                        $type = "work";
-                        break;
-                    default:
-                        $type = "cell";
-                }
-                $vcard .= "TEL;TYPE=$type:$phonenumber\r\n";
+        $phonenumbers = get_user_meta($userId, 'tsjippy_phonenumbers');
+        foreach ($phonenumbers as $key => $phonenumber) {
+            switch ($key) {
+                case 0:
+                    $type = "cell";
+                    break;
+                case 1:
+                    $type = "home";
+                    break;
+                case 2:
+                    $type = "work";
+                    break;
+                default:
+                    $type = "cell";
             }
+            $vcard .= "TEL;TYPE=$type:$phonenumber\r\n";
         }
     }
     if ($address) {
