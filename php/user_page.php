@@ -51,6 +51,9 @@ function createUserPage($userId)
         // make static
         update_post_meta($pageId, 'tsjippy_static_content', true);
 
+        // Do not show in page gallery
+        update_post_meta($pageId, 'tsjippy_skipgallery', true);
+
         // Store for the user
         update_user_meta($userId, "tsjippy_user_page_id", $pageId);
 
