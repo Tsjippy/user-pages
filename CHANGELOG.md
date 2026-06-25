@@ -2,13 +2,18 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- i mplemented tsjippy-frontend-posting-allowed-to-edit filter
 
 ### Changed
 
 ### Fixed
 
 ### Updated
+
+## [10.2.9] - 2026-06-25
+
+
+### Added
+- i mplemented tsjippy-frontend-posting-allowed-to-edit filter
 
 ## [10.2.8] - 2026-06-24
 
