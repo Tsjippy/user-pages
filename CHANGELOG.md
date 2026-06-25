@@ -2,6 +2,7 @@
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- i mplemented tsjippy-frontend-posting-allowed-to-edit filter
 
 ### Changed
 
