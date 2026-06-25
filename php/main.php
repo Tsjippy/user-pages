@@ -103,3 +103,20 @@ function getSenderDisplayName($displayName, $user)
 
     return $sender;
 }
+
+
+/**
+ * Filters if we are allowed to edit the given post
+ * 
+ * @param bool      $allowed    Default false
+ * @param \WP_Post  $post       The post to check permission for
+ */
+add_filter('tsjippy-frontend-posting-allowed-to-edit', function($allowed, $post){
+    $userPageId = getUserPageId(get_current_user_id());
+
+    if($userPageId == $post->ID){
+        return true;
+    }
+
+    return $allowed;
+}, 10, 2);
