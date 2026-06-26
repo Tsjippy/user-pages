@@ -596,14 +596,7 @@ function addMinistryLinks($userId)
     if (empty($html)) {
         $html    = "Ministry location(s) missing. ";
         if (get_current_user_id() == $userId) {
-            $url    = '';
-            if (defined('TSJIPPY\USERMANAGEMENT\SETTINGS')) {
-                $url   = get_permalink(TSJIPPY\USERMANAGEMENT\SETTINGS['account_page'] ?? '');
-
-                if (!$url) {
-                    $url    = '';
-                }
-            }
+            $url    = get_edit_profile_url($userId);
             $html    .= "Please update on the <a href='$url/?main-tab=generic-info#ministries'>Generic Info page</a>";
         }
     }
@@ -718,7 +711,7 @@ function showContent($userId)
 
 ?>
     <div class='content-wrapper'>
-        <h4>Content published by <?php echo $name; ?></h4>
+        <h4>Content published by <?php echo esc_attr($name); ?></h4>
         <div class='author-content-wrapper'>
             <?php
             if (empty($posts)) {
@@ -727,7 +720,7 @@ function showContent($userId)
             foreach ($posts as $post) {
                 $url    = get_permalink($post);
             ?>
-                <article id="post-<?php echo $post->ID; ?>" class='author-content'>
+                <article id="post-<?php echo esc_attr($post->ID); ?>" class='author-content'>
                     <div class='picture'>
                         <a href='<?php echo esc_url($url); ?>'>
                             <?php
