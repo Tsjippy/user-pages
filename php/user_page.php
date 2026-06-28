@@ -168,10 +168,7 @@ function userDescription($userId)
 
     do_action('tsjippy-user-pages-description', $user);
 
-    $privacyPreference = get_user_meta($userId, 'tsjippy_privacy_preference', true);
-    if (!is_array($privacyPreference)) {
-        $privacyPreference = [];
-    }
+    $privacyPreference = array_flip(get_user_meta($userId, 'tsjippy_privacy_preference'));
 
     $sendingOffice     = get_user_meta($userId, 'tsjippy_sending_office', true);
     $officeHtml        = '';
@@ -358,7 +355,7 @@ function showUserInfo($userId, $arrived)
 {
     $html                = "";
     $userdata            = get_userdata($userId);
-    $privacyPreference     = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
+    $privacyPreference   = get_user_meta($userId, 'tsjippy_privacy_preference');
 
     //If it is a valid user and privacy allows us to show it
     if ($userdata != null) {
@@ -398,7 +395,7 @@ function showUserInfo($userId, $arrived)
  */
 function showPhonenumbers($userId, $clean = false)
 {
-    $privacyPreference = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
+    $privacyPreference = get_user_meta($userId, 'tsjippy_privacy_preference');
 
     $html = "";
     if (!isset($privacyPreference['hide_phone'])) {
@@ -488,7 +485,7 @@ function buildVcard($userId)
     //Get the user partner
     $partner = $family->getPartner($userId, true);
 
-    $privacyPreference = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
+    $privacyPreference = get_user_meta($userId, 'tsjippy_privacy_preference');
 
     if (empty($privacyPreference['hide_location'])) {
         //Get the user address

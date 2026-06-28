@@ -226,7 +226,7 @@ function linkedUserDescription($atts)
     if ($userdata->display_name == $nickname) {
         $displayName     = '';
     }
-    $privacyPreference     = (array)get_user_meta($userId, 'tsjippy_privacy_preference', true);
+    $privacyPreference   = get_user_meta($userId, 'tsjippy_privacy_preference');
 
     $url                 = TSJIPPY\maybeGetUserPageUrl($userId);
 
@@ -341,7 +341,7 @@ function buildUserDetailPdf($download = true)
             continue;
         }
 
-        $privacyPreference = get_user_meta($user->ID, 'tsjippy_privacy_preference', true);
+        $privacyPreference = get_user_meta($user->ID, 'tsjippy_privacy_preference');
         if (!is_array($privacyPreference)) {
             $privacyPreference = [];
         }
