@@ -641,7 +641,7 @@ function getUserPageId($userId)
  *
  * @return    string                    user page url
  */
-add_filter('tsjippy-user-page-url', __NAMESPACE__ . '\getUserPageUrl', 10, 2);
+add_filter('author_link', __NAMESPACE__ . '\getUserPageUrl', 10, 2);
 /**
  * Gets the URL of the user's description page
  *

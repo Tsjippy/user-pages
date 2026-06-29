@@ -228,7 +228,7 @@ function linkedUserDescription($atts)
     }
     $privacyPreference   = get_user_meta($userId, 'tsjippy_privacy_preference');
 
-    $url                 = TSJIPPY\maybeGetUserPageUrl($userId);
+    $url                 = get_author_posts_url($userId);
 
     $profilePicture    = '';
     if ($a['picture'] && !isset($privacyPreference['hide_profile_picture'])) {
