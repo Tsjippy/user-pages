@@ -14,7 +14,7 @@ use TSJIPPY;
  * Requires PHP:         8.3
  * Tested up to:         7.0
  * Plugin URI:            https://github.com/Tsjippy/userpages
- * Tested:                6.9
+ * Tested:               7.0
  * TextDomain:            tsjippy
  * Requires Plugins:    
  * License: GPLv2 or later
@@ -51,6 +51,10 @@ register_activation_hook(__FILE__, function () {
     $settings['all-contacts-page']    = TSJIPPY\ADMIN\createDefaultPage('All Users', '[tsjippy_all_contacts]');
 
     update_option('tsjippy_' . PLUGINSLUG . '_settings', $settings);
+
+    if(function_exists('TSJIPPY\activate')){
+        \TSJIPPY\activate();
+    }
 });
 
 // run on deactivation
