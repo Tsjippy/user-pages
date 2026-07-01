@@ -123,7 +123,9 @@ function allContacts()
         })
     </script>
     <div class='download contacts' style='margin-top:10px;'>
-        <h4>Add Contacts to Your Address Book</h4>
+        <h4>
+            Add Contacts to Your Address Book
+        </h4>
         <p>
             For your convenience, you can add contact details for SIM Nigeria’s team members to your phone or email address book.<br>
             <br>

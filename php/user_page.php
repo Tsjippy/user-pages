@@ -708,7 +708,9 @@ function showContent($userId)
 
 ?>
     <div class='content-wrapper'>
-        <h4>Content published by <?php echo esc_attr($name); ?></h4>
+        <h4>
+            Content published by <?php echo esc_attr($name); ?>
+        </h4>
         <div class='author-content-wrapper'>
             <?php
             if (empty($posts)) {
@@ -728,7 +730,9 @@ function showContent($userId)
 
                     <div class='title'>
                         <a href='<?php echo esc_url($url); ?>'>
-                            <h4><?php echo wp_kses(force_balance_tags($post->post_title), $allowedHtml); ?></h4>
+                            <h4>
+                                <?php echo wp_kses(force_balance_tags($post->post_title), $allowedHtml); ?>
+                            </h4>
                         </a>
                     </div>
 
