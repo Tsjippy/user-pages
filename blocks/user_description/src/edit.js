@@ -58,7 +58,7 @@ const Edit = ({ attributes, setAttributes }) => {
     }
 
     if (!users?.length) {
-      return <div> {__("No users found", "sim")}</div>;
+      return <div> {__("No users found", "tsjippy")}</div>;
     }
 
     let options = users.map((c) => ({ label: c.name, value: c.id }));
@@ -95,22 +95,22 @@ const Edit = ({ attributes, setAttributes }) => {
         <Panel>
           <PanelBody>
             <i>
-              {__("Use searchbox below to search an user to display", "sim")}
+              {__("Use searchbox below to search an user to display", "tsjippy")}
             </i>
             <SearchControl onChange={setSearchTerm} value={searchTerm} />
             <BuildRadioControls />
             <ToggleControl
-              label={__("Show picture", "sim")}
+              label={__("Show picture", "tsjippy")}
               checked={!!attributes.picture}
               onChange={() => setAttributes({ picture: !attributes.picture })}
             />
             <ToggleControl
-              label={__("Show phonenumbers", "sim")}
+              label={__("Show phonenumbers", "tsjippy")}
               checked={!!attributes.phone}
               onChange={() => setAttributes({ phone: !attributes.phone })}
             />
             <ToggleControl
-              label={__("Show e-mail address", "sim")}
+              label={__("Show e-mail address", "tsjippy")}
               checked={!!attributes.email}
               onChange={() => setAttributes({ email: !attributes.email })}
             />

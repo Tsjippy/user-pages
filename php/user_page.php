@@ -469,7 +469,7 @@ function addVcardDownload($userId)
         //Return vcard hyperlink
     } else {
         $url = add_query_arg(['vcard' => $userId], get_permalink($post->ID));
-        return '<a href="' . $url . '" class="button sim vcard">Add to your contacts</a>';
+        return '<a href="' . $url . '" class="button tsjippyvcard">Add to your contacts</a>';
     }
 }
 
