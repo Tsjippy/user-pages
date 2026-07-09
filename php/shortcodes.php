@@ -180,7 +180,7 @@ function allContacts()
 }
 
 // Shortcode to display a user in a page or post
-add_shortcode('tsjippy_user_link', __NAMESPACE__ . '\linkedUserDescription');
+//add_shortcode('tsjippy_user_link', __NAMESPACE__ . '\linkedUserDescription');
 
 /**
  * Displays a link to a user's profile page with optional contact information.

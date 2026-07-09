@@ -13,6 +13,8 @@ import {
 import { store as coreDataStore } from "@wordpress/core-data";
 import { useSelect } from "@wordpress/data";
 import { useBlockProps, InspectorControls } from "@wordpress/block-editor";
+import { RawHTML } from '@wordpress/element';
+import { ServerSideRender, useServerSideRender } from '@wordpress/server-side-render';
 
 const Edit = ({ attributes, setAttributes }) => {
   const { id, picture, phone, email, style } = attributes;
@@ -76,18 +78,33 @@ const Edit = ({ attributes, setAttributes }) => {
     );
   };
 
-  const [html, setHtml] = useState(<Spinner />);
+  const getServerSideRenderedContent = ( ) => {
+    const { content, status, error } = useServerSideRender( {
+        block: "tsjippy-user-pages/user_description",
+        attributes: attributes,
+        urlQueryArgs: { context: 'edit' } // Optional custom query arguments
+    } );
 
-  useEffect(() => {
-    async function getHTML() {
-      setHtml(<Spinner />);
-      const response = await apiFetch({
-        path: `${tsjippy.restApiPrefix}/userpage/linked_user_description?id=${id}&picture=${picture}&phone=${phone}&email=${email}&style=${style}`,
-      });
-      setHtml(response);
+    const blockProps = useBlockProps();
+
+    let html;
+
+    if ( status === 'loading' ) {
+        html = "Loading...";
     }
-    getHTML();
-  }, [attributes]);
+
+    else if ( status === 'error' ) {
+        html = `Error: ${ error }`;
+    }
+
+    else{
+      html  = <RawHTML>{ content }</RawHTML>; 
+    }
+
+    return <div {...blockProps}>
+      { html }
+    </div>;
+  }
 
   return (
     <>
@@ -123,7 +140,7 @@ const Edit = ({ attributes, setAttributes }) => {
           </PanelBody>
         </Panel>
       </InspectorControls>
-      <div {...useBlockProps()}>{wp.element.RawHTML({ children: html })}</div>
+      { getServerSideRenderedContent() }
     </>
   );
 };
