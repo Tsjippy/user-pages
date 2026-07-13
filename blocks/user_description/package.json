@@ -2,7 +2,7 @@
 	"name": "tsjippy-linkedduserdescription",
 	"version": "1.1.0",
 	"description": "A linked user description",
-	"author": "The WordPress Contributors",
+	"author": "tsjippy",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {
