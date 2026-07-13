@@ -80,7 +80,7 @@ const Edit = ({ attributes, setAttributes }) => {
 
   const getServerSideRenderedContent = ( ) => {
     const { content, status, error } = useServerSideRender( {
-        block: "tsjippy-user-pages/user_description",
+        block: "tsjippy-user-pages/user-description",
         attributes: attributes,
         urlQueryArgs: { context: 'edit' } // Optional custom query arguments
     } );
