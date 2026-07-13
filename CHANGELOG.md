@@ -6,9 +6,14 @@
 ### Changed
 
 ### Fixed
-- block rendering
 
 ### Updated
+
+## [10.4.2] - 2026-07-13
+
+
+### Fixed
+- block rendering
 
 ## [10.4.1] - 2026-07-12
 
