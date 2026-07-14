@@ -314,7 +314,6 @@ function createContactlistPdf($header, $data, $download = false)
  */
 function buildUserDetailPdf($download = true)
 {
-
     //Sort users on last name, then on first name
     $args = array(
         'meta_query' => array(
