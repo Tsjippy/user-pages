@@ -256,8 +256,8 @@ function linkedUserDescription($atts)
  * Export data in an PDF
  *
  * @param    array        $header     The header text
- * @param    array        $data        The data
- * @param    bool|string    $download    Serve as downloadable file default false
+ * @param    array        $data       The data
+ * @param    bool|string  $download   Serve as downloadable file default false
  *
  * @return string the pdf path or none
  */
@@ -343,9 +343,6 @@ function buildUserDetailPdf($download = true)
         }
 
         $privacyPreference = get_user_meta($user->ID, 'tsjippy_privacy_preference');
-        if (!is_array($privacyPreference)) {
-            $privacyPreference = [];
-        }
 
         $name            = $user->display_name; //Real name
         $nickname        = get_user_meta($user->ID, 'tsjippy_nickname', true); //persons name in case of a office account
@@ -356,8 +353,8 @@ function buildUserDetailPdf($download = true)
         $profilePicture    = TSJIPPY\USERMANAGEMENT\getProfilePicturePath($user->ID);
         if ($profilePicture) {
             $name    = [
-                'picture'    => $profilePicture,
-                'name'        => $name
+                'picture' => $profilePicture,
+                'name'    => $name
             ];
         }
 
