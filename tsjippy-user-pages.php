@@ -7,14 +7,14 @@ use TSJIPPY;
 /**
  * Plugin Name:          Tsjippy User Pages
  * Description:          This plugin adds 3 shortcodes: <h4>all_contacts</h4> This shortcode displays a button to download all registered users to store them as contacts in gmail or outtlook. Use like this: <code>[all_contacts']</code> <h4>user-link</h4> This shortcode displays a user in a post or page. It has 5 properties: 'id' The id of the user to be displayed, mandatory 'picture' Whether the users picture should be displayed or not. 'phone' Whether the users phonenumbers should be displayed or not. 'email' Whether the users e-mail addresses should be displayed or not. 'style' Any additional html styling. Use like this: <code>[user-link id="12"]</code>
- * Version:              10.5.6
+ * Version:              10.5.7
  * Author:               Ewald Harmsen
  * AuthorURI:            harmseninnigeria.nl
  * Requires at least:    6.3
  * Requires PHP:         8.3
- * Tested up to:         7.0
+ * Tested up to:         7.1
  * Plugin URI:            https://github.com/Tsjippy/userpages
- * Tested:               7.0
+ * Tested:               7.1
  * TextDomain:            tsjippy
  * Requires Plugins:    
  * License: GPLv2 or later
