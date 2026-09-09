@@ -198,7 +198,7 @@ function userDescription($userId)
         if (!$url) {
             $url = '';
         }
-        $address    .= "Please update on the <a href='$url/?main-tab=generic-info#ministries'>Generic Info page</a>";
+        $address    .= "Please update on the <a href='$url/?main-tab=generic-info#jobs'>Generic Info page</a>";
     }
     if (is_array($location)) {
         if (empty($location["location"])) {
@@ -564,7 +564,7 @@ function buildVcard($userId)
 }
 
 /**
- * Build hyperlinks for ministries
+ * Build hyperlinks for jobs
  *
  * @param    int        $userId        The WP_User id
  *
@@ -572,11 +572,11 @@ function buildVcard($userId)
  */
 function addMinistryLinks($userId)
 {
-    $userMinistries = (array)get_user_meta($userId, "tsjippy_jobs", true);
+    $jobs = (array)get_user_meta($userId, "tsjippy_jobs", true);
 
     $html = "";
-    foreach ($userMinistries as $key => $userMinistry) {
-        if (!empty($userMinistry)) {
+    foreach ($jobs as $key => $job) {
+        if (!empty($job)) {
             $page    = get_post($key);
             if (!empty($page)) {
                 $pageUrl = get_post_permalink($page->ID);
@@ -586,7 +586,7 @@ function addMinistryLinks($userId)
             } else {
                 continue;
             }
-            $html .= "$pageUrl as $userMinistry<br>";
+            $html .= "$pageUrl as $job<br>";
         }
     }
 
@@ -594,7 +594,7 @@ function addMinistryLinks($userId)
         $html    = "Ministry location(s) missing. ";
         if (get_current_user_id() == $userId) {
             $url    = get_edit_profile_url($userId);
-            $html    .= "Please update on the <a href='$url/?main-tab=generic-info#ministries'>Generic Info page</a>";
+            $html    .= "Please update on the <a href='$url/?main-tab=generic-info#jobs'>Generic Info page</a>";
         }
     }
 

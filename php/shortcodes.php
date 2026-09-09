@@ -370,15 +370,15 @@ function buildUserDetailPdf($download = true)
             $phonenumbers = get_user_meta($user->ID, "tsjippy_phonenumbers");
         }
 
-        $ministries = [];
+        $jobs = [];
         if (empty($privacyPreference['hide_ministry'])) {
-            $userMinistries = get_user_meta($user->ID, "tsjippy_jobs", true);
+            $userJobs = get_user_meta($user->ID, "tsjippy_jobs", true);
 
-            if (!empty($userMinistries)) {
-                foreach ($userMinistries as $key => $userMinistry) {
+            if (!empty($userJobs)) {
+                foreach ($userJobs as $key => $job) {
                     $title            = get_the_title($key);
                     if (!empty($title)) {
-                        $ministries[]  = $title;
+                        $jobs[]  = $title;
                     }
                 }
             }
@@ -392,30 +392,11 @@ function buildUserDetailPdf($download = true)
             }
         }
 
-        $userDetails[]     = [$name, $email, $phonenumbers, $ministries, $location];
-
-        // create a seperate row for each phonenumber and ministry
-        /*         $rows            = max(count($phonenumbers), count($ministries), 1);
-        for ($x = 0; $x < $rows; $x++) {
-            $phonenumber    = '';
-            if (isset($phonenumbers[$x])) {
-                $phonenumber    = $phonenumbers[$x];
-            }
-
-            $ministry    = '';
-            if (isset($ministries[$x])) {
-                $ministry    = $ministries[$x];
-            }
-
-            $userDetails[]     = [$name, $email, $phonenumber, $ministry, $location];
-            $name        = '';
-            $email        = '';
-            $location    = '';
-        } */
+        $userDetails[]     = [$name, $email, $phonenumbers, $jobs, $location];
     }
 
     //Headers of the table
-    $tableHeaders = ["Name", " E-mail", " Phone", " Ministries", " State"];
+    $tableHeaders = ["Name", " E-mail", " Phone", " Jobs", " State"];
 
     //Create a pdf and add it to the mail
     return createContactlistPdf($tableHeaders, $userDetails, $download);
