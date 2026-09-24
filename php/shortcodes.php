@@ -6,6 +6,9 @@ use TSJIPPY;
 
 //Shortcode to download all contact info
 add_shortcode("tsjippy_all_contacts", __NAMESPACE__ . '\allContacts');
+/**
+ * Creates a all contacts file vcard
+ */
 function allContacts()
 {
     $shouldDie    = true;
@@ -112,7 +115,7 @@ function allContacts()
         document.addEventListener('click', ev => {
             let target = ev.target;
             if (target.matches('.type-selector')) {
-                ev.stopImmediatePropagation();
+                ev.stopPropagation();
 
                 if (target.value == 'pdf') {
                     document.querySelectorAll('.since-wrapper').forEach(el => el.classList.add('hidden'));
